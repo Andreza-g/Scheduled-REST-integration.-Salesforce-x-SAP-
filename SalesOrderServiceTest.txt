@@ -1,0 +1,35 @@
+@isTest
+public class SalesOrderServiceTest {
+
+    @isTest
+    static void setDataTest(){
+        IntegrationSAP__mdt integrationMetaDataType = IntegrationSAP__mdt.getInstance('AprovacaoDeCredito');
+        String key = String.valueOf(integrationMetaDataType.UserName__c + ':' + integrationMetaDataType.password__c);
+        Blob KeyBlob = Blob.valueOf(key);
+        String paramvalue = EncodingUtil.base64Encode(KeyBlob);
+
+        StaticResourceCalloutMock mock = new StaticResourceCalloutMock();
+        mock.setStaticResource('SalesOrderMock');
+        mock.setStatusCode(200);
+        mock.setHeader('Content-Type', 'application/json');
+        mock.setHeader('Authorization', 'Basic' + paramvalue);
+        Test.setMock(HttpCalloutMock.class, mock);
+
+        SalesOrderService.InfoModel infoModel = new SalesOrderService.InfoModel();       
+        infoModel.statusSP = 'Aprovado';
+        infoModel.soldToParty = '52168';
+        infoModel.salesOrderNumber = '187000252';
+        infoModel.note = 'teste isso é um teste';
+        infoModel.approvalUsernameSP = 'Nome do Aprovador';
+        infoModel.approvalDateSP = '2023-01-20';
+        infoModel.approvalTimeSP = '10:22:45';        
+
+        List<SalesOrderService.infoModel> InfoModelList = new List<SalesOrderService.infoModel>{infoModel};
+        SalesOrderService.InfoRequestModel InfoRequestModel = new SalesOrderService.InfoRequestModel();
+        InfoRequestModel.lista = InfoModelList;
+
+        Test.startTest();
+        SalesOrderService.getInformations(InfoRequestModel);
+        Test.stopTest();
+    }   
+}

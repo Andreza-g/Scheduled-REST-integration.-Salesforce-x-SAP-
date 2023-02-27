@@ -1,0 +1,59 @@
+public class SalesOrderService {
+    
+    public static InfoResponseModel getInformations (InfoRequestModel requestData){
+        if(requestData == null){
+            return null;
+        }
+        IntegrationSAP__mdt integrationMetaDataType = IntegrationSAP__mdt.getInstance('AprovacaoDeCredito');
+
+        Http http = new Http();
+        HttpRequest integrationRequest = new HttpRequest();
+        InfoResponseModel IRM = new InfoResponseModel();
+        integrationRequest.setEndpoint(integrationMetaDataType.EndPoint__c);
+        integrationRequest.setHeader('Content-type', 'application/json');
+        integrationRequest.setHeader('Authorization', 'Basic ' + integrationMetaDataType.Token__c);
+        integrationRequest.setMethod('POST');
+        integrationRequest.setBody(JSON.serialize(requestData));
+
+        System.debug('requestData******* ' + requestData);
+        HttpResponse response = Http.send(integrationRequest);
+        
+        System.debug('Body****** ' + response.getBody());
+        System.debug('Status****** ' + response.getStatusCode());
+
+        if(response.getStatusCode() == 200 || response.getStatusCode() == 201){
+            IRM = (InfoResponseModel) JSON.deserialize(response.getBody(), InfoResponseModel.class);
+            IRM.success = true;
+            System.debug('Resposta*** ' + response.getStatusCode());          
+        }else{
+            IRM = (InfoResponseModel) JSON.deserialize(response.getBody(), InfoResponseModel.class);
+            IRM.success = false;
+            System.debug('Erro ao obter dados*** ' + response.getStatusCode());          	
+        }
+        return IRM;
+    }
+
+    public class InfoRequestModel{
+        public List<InfoModel> salesOrder;
+    }
+
+    public class InfoModel {
+        public String statusSF;
+        public String soldToParty;
+        public String salesOrderNumber;
+        public String note;
+        public String approvalUsernameSF;
+        public String approvalDateSF;
+        public String approvalTimeSF;
+    }
+
+    public class InfoResponseModel{
+        public InfoResModel response;
+        public Boolean success;
+    }
+
+    public class InfoResModel {
+        public String status;
+        public String message;       
+    }
+}

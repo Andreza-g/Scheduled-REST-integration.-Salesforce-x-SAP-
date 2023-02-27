@@ -1,0 +1,31 @@
+public with sharing class CaseTriggerHandler extends TriggerHandler{
+    private CaseBO bo = CaseBO.getInstance();
+
+    public override void beforeInsert() {}
+
+    public override void afterInsert() {
+        try {
+            bo.getInformations(Trigger.new);
+        } catch (Exception e) {
+            Trigger.new[0].addError(e.getMessage());
+        } 
+    }
+
+    public override void beforeUpdate() {}
+
+    public override void afterUpdate() {
+        // List<Case> changedList = new List<Case>();
+        // for(Case ch : (List<Case>) Trigger.new){
+        //     if((isChanged(ch,'Status') && ch.Status == 'Aprovado') || (ch.Status == 'Rejeitado' && ch.Reason == 'Desconto/NF Complementar' && ch.Tipo_de_Solicita_o__c == 'Desconto')){
+        //         changedList.add(ch);
+        //     } 
+        // }
+        // if(changedList.size()>0){
+        //     try {
+        //         bo.getInformations(Trigger.new);
+        //     } catch (Exception e) {
+        //         Trigger.new[0].addError(e.getMessage());
+        //     }            
+        // }        
+    }
+}

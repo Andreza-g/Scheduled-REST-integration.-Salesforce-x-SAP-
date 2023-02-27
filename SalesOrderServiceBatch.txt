@@ -1,0 +1,18 @@
+global class SalesOrderServiceBatch implements Database.Batchable<sObject>, Database.AllowsCallouts, Database.Stateful{
+
+    global Database.QueryLocator start(Database.BatchableContext contexto){
+        System.debug('Batch iniciado');
+        Database.QueryLocator queryLocator = CaseDAO.getInstance().searchRecordIntegrationError();
+        return queryLocator;
+    }
+
+    global void execute(Database.BatchableContext contexto, List<Case> listCase){
+        List<Case> listCaseError = new List<Case>();
+
+        for(Case cases : listCase)
+        new CaseBO().getInformations(listCase);
+        System.debug('Batch executado');
+    }
+
+    global void finish(Database.BatchableContext contexto){}
+}

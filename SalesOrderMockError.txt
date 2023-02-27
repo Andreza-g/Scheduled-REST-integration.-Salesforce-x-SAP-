@@ -1,0 +1,6 @@
+{
+    "response": {
+        "status": "Error",
+        "message": "A ordem de venda já está desbloqueada."
+    }
+}

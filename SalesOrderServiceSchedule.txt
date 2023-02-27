@@ -1,0 +1,19 @@
+global with sharing class SalesOrderServiceSchedule implements Schedulable{
+
+    public static String sch0 = '0 0 * * * ?';
+    public static String sch1 = '0 15 * * * ?';
+    public static String sch2 = '0 30 * * * ?';
+    public static String sch3 = '0 45 * * * ?';
+
+    global void execute(SchedulableContext sc){
+        ID BatchId = Database.executeBatch(new SalesOrderServiceBatch(), 1);
+    }
+
+    public static void SchedulerMethod(){
+
+        System.Schedule('SalesOrderServiceBatch - Hora e 00 min', sch0, new SalesOrderServiceSchedule());
+        System.Schedule('SalesOrderServiceBatch - Hora e 15 min', sch1, new SalesOrderServiceSchedule());
+        System.Schedule('SalesOrderServiceBatch - Hora e 30 min', sch2, new SalesOrderServiceSchedule());
+        System.Schedule('SalesOrderServiceBatch - Hora e 45 min', sch3, new SalesOrderServiceSchedule());
+    }
+}
